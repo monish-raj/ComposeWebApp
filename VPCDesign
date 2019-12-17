@@ -1,0 +1,38 @@
+
+
+# Attempt to capture VPC setup details.
+# Partial.
+
+VPC - ending in 7d6a
+    - 2 AZ, subnets are: ending in 76b8 (us-east-1a) and ending in 6315 (us-east-1b)
+    - LB is in this VPC, on both the subnets us-east-1a and us-east-1b
+        - internet facing, IPv4
+        - LB uses SG ending 939fb
+        - LB hosted zone Z35SXDOTRQ7X7K
+        - Listener redirecting port 80 traffic to port 443 
+        - 2nd listener on port 443, forwarding to same target group 
+    - Target group webappTG
+        - attached to VPC ending 7d6a, LB webappLB
+        - registered target points to private ip of Fargate task: 10.0.0.136
+    - SG ending 939fb - LBwebappSG - attached to ALB
+        - opened port 80 and 443 inbound from everywhere
+    - SG ending 9790 - ECSwebapSG - attached to ECS service 
+        - allow inbound port 80 only from sg-0110c8a497f6939fb (from ALB)
+        - this disallows public access over the ECS task ENI public ip, but continues to allow external access through ALB 
+
+    
+    
+
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1574874213614",
+    "Statement": [
+        {
+            "Sid": "Stmt1574873987105",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::tech.monishraj.com/*"
+        }
+    ]
+}

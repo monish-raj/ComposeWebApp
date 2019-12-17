@@ -1,0 +1,24 @@
+version: '3'
+
+#
+# Project based on instuctions from 
+# https://aws.amazon.com/blogs/compute/hosting-asp-net-core-applications-in-amazon-ecs-using-aws-fargate/
+#
+
+services:
+  webapp:
+    image: webapp
+    build:
+      context: ../FirstRazorWebApp/FirstRazorWebApp
+      dockerfile: Dockerfile
+    expose:
+        - "5000"
+  nginxrp:
+    image: nginxrp
+    build:
+        context: ../NginxReverseProxy
+        dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    links:
+      - webapp
